@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expediente Trivia — Verdadero o Falso</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Zilla+Slab:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --navy: #1b2a41;
+    --navy-2: #14202f;
+    --parchment: #f1e7d0;
+    --parchment-2: #e8dab8;
+    --ink-red: #b23a2f;
+    --stamp-green: #2f6f4e;
+    --stamp-green-dark: #1f4d35;
+    --pencil: #4a4033;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(255,255,255,0.03), transparent 40%),
+      var(--navy);
+    background-attachment: fixed;
+    font-family: 'Zilla Slab', serif;
+    color: var(--parchment);
+    display:flex;
+    justify-content:center;
+    padding: 40px 16px 80px;
+  }
+
+  .folder{
+    width:100%;
+    max-width: 720px;
+  }
+
+  .tab{
+    display:inline-block;
+    background: var(--ink-red);
+    color: var(--parchment);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 6px 16px;
+    border-radius: 4px 4px 0 0;
+    text-transform: uppercase;
+    margin-left: 24px;
+    margin-bottom: -1px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .sheet{
+    background: var(--parchment);
+    color: var(--pencil);
+    border-radius: 3px 10px 10px 10px;
+    padding: 36px 36px 28px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    position: relative;
+    background-image:
+      linear-gradient(var(--parchment-2) 1px, transparent 1px);
+    background-size: 100% 34px;
+  }
+
+  header{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid var(--pencil);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+
+  header h1{
+    font-family: 'Special Elite', cursive;
+    font-size: 26px;
+    margin: 0 0 4px;
+    letter-spacing: 0.5px;
+  }
+
+  header p{
+    margin:0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-red);
+  }
+
+  .case-id{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-align: right;
+    line-height: 1.6;
+    color: var(--pencil);
+    opacity: 0.65;
+  }
+
+  #quiz-area{ position: relative; }
+
+  .question-card{
+    display:none;
+    animation: fadeIn 0.35s ease;
+  }
+  .question-card.active{ display:block; }
+
+  @keyframes fadeIn{
+    from{ opacity:0; transform: translateY(6px); }
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  .q-meta{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-red);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  .q-text{
+    font-size: 21px;
+    line-height: 1.4;
+    margin: 0 0 24px;
+    min-height: 58px;
+  }
+
+  .choices{
+    display:flex;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .choice-btn{
+    flex:1;
+    padding: 16px 10px;
+    font-family: 'Special Elite', cursive;
+    font-size: 17px;
+    letter-spacing: 1px;
+    border: 2px solid var(--pencil);
+    background: transparent;
+    color: var(--pencil);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-transform: uppercase;
+  }
+  .choice-btn:hover:not(:disabled){
+    background: var(--pencil);
+    color: var(--parchment);
+  }
+  .choice-btn:disabled{ cursor: default; }
+
+  .choice-btn.correct{
+    background: var(--stamp-green);
+    border-color: var(--stamp-green-dark);
+    color: #fff;
+  }
+  .choice-btn.wrong{
+    background: var(--ink-red);
+    border-color: #7a241c;
+    color: #fff;
+  }
+
+  .stamp{
+    position:absolute;
+    top: 6px;
+    right: -4px;
+    font-family: 'Special Elite', cursive;
+    font-size: 22px;
+    padding: 6px 14px;
+    border: 3px solid;
+    border-radius: 4px;
+    transform: rotate(8deg);
+    opacity: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .stamp.show{ opacity: 0.9; transform: rotate(8deg) scale(1); }
+  .stamp.correct{ color: var(--stamp-green-dark); border-color: var(--stamp-green-dark); }
+  .stamp.wrong{ color: var(--ink-red); border-color: var(--ink-red); }
+
+  .feedback{
+    font-size: 14px;
+    font-style: italic;
+    color: var(--pencil);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.25s ease;
+    border-left: 3px solid var(--ink-red);
+    padding-left: 12px;
+    margin-bottom: 18px;
+  }
+  .feedback.show{ opacity: 0.85; max-height: 80px; }
+
+  .nav-row{
+    display:flex;
+    justify-content: flex-end;
+  }
+
+  .next-btn{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--navy);
+    color: var(--parchment);
+    border: none;
+    padding: 12px 22px;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, background 0.15s ease;
+  }
+  .next-btn.show{ opacity: 1; pointer-events: auto; }
+  .next-btn:hover{ background: var(--navy-2); }
+
+  .progress-track{
+    display:flex;
+    gap:5px;
+    margin-bottom: 26px;
+  }
+  .progress-dot{
+    flex:1;
+    height:5px;
+    background: var(--parchment-2);
+    border-radius: 3px;
+    overflow:hidden;
+  }
+  .progress-dot span{
+    display:block;
+    height:100%;
+    width:0%;
+    background: var(--pencil);
+    transition: width 0.2s ease;
+  }
+  .progress-dot.correct span{ background: var(--stamp-green); width:100%; }
+  .progress-dot.wrong span{ background: var(--ink-red); width:100%; }
+  .progress-dot.current span{ width:100%; background: var(--pencil); }
+
+  /* Results */
+  #results{ display:none; text-align:center; }
+  #results.active{ display:block; animation: fadeIn 0.4s ease; }
+
+  .score-big{
+    font-family: 'Special Elite', cursive;
+    font-size: 56px;
+    margin: 10px 0 6px;
+    color: var(--navy);
+  }
+  .verdict{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-red);
+    margin-bottom: 24px;
+  }
+
+  .restart-btn{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--ink-red);
+    color: #fff;
+    border: none;
+    padding: 13px 26px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .restart-btn:hover{ background: #8f2c22; }
+
+  @media (max-width:520px){
+    .sheet{ padding: 26px 20px 22px; }
+    header{ flex-direction: column; gap: 8px; }
+    .case-id{ text-align:left; }
+    .q-text{ font-size: 18px; }
+    .score-big{ font-size: 44px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="folder">
+  <div class="tab">Expediente Nº 07</div>
+  <div class="sheet">
+    <header>
+      <div>
+        <h1>Verdadero o Falso</h1>
+        <p>Verifica cada afirmación</p>
+      </div>
+      <div class="case-id">
+        10 AFIRMACIONES<br>
+        ESTADO: EN CURSO
+      </div>
+    </header>
+
+    <div class="progress-track" id="progressTrack"></div>
+
+    <div id="quiz-area"></div>
+
+    <div id="results">
+      <p class="verdict">VEREDICTO FINAL</p>
+      <div class="score-big" id="scoreBig">0 / 10</div>
+      <p id="scoreMsg" style="margin-bottom:28px; font-size:15px;"></p>
+      <button class="restart-btn" onclick="restartQuiz()">Reabrir el expediente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const preguntas = [
+  { texto: "El corazón humano tiene cuatro cámaras.", respuesta: true,
+    dato: "Correcto: dos aurículas y dos ventrículos." },
+  { texto: "La Gran Muralla China es visible a simple vista desde la Luna.", respuesta: false,
+    dato: "Falso: es un mito popular; no es visible a simple vista desde el espacio." },
+  { texto: "El agua hierve a menor temperatura a mayor altitud.", respuesta: true,
+    dato: "Correcto: la presión atmosférica más baja reduce el punto de ebullición." },
+  { texto: "Australia es tanto un país como un continente.", respuesta: true,
+    dato: "Correcto: es el único país que ocupa un continente entero." },
+  { texto: "Los tiburones son mamíferos.", respuesta: false,
+    dato: "Falso: son peces cartilaginosos." },
+  { texto: "El Sol es una estrella de tamaño mediano.", respuesta: true,
+    dato: "Correcto: es una estrella enana amarilla de tipo G." },
+  { texto: "Napoleón Bonaparte medía menos de 1.60 m, muy por debajo del promedio de su época.", respuesta: false,
+    dato: "Falso: medía alrededor de 1.68 m, cerca del promedio francés de entonces." },
+  { texto: "El idioma con más hablantes nativos del mundo es el inglés.", respuesta: false,
+    dato: "Falso: el mandarín tiene más hablantes nativos." },
+  { texto: "La miel puede conservarse durante siglos sin echarse a perder.", respuesta: true,
+    dato: "Correcto: se ha encontrado miel comestible en tumbas egipcias milenarias." },
+  { texto: "Todos los planetas del sistema solar giran en la misma dirección alrededor del Sol.", respuesta: true,
+    dato: "Correcto: todos orbitan en sentido antihorario visto desde el polo norte solar." }
+];
+
+let actual = 0;
+let puntaje = 0;
+let respondida = false;
+
+const quizArea = document.getElementById('quiz-area');
+const progressTrack = document.getElementById('progressTrack');
+const results = document.getElementById('results');
+
+function buildProgress(){
+  progressTrack.innerHTML = '';
+  preguntas.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot';
+    dot.id = 'dot-' + i;
+    dot.innerHTML = '<span></span>';
+    progressTrack.appendChild(dot);
+  });
+}
+
+function renderQuestion(){
+  respondida = false;
+  quizArea.innerHTML = '';
+  document.getElementById('dot-' + actual).classList.add('current');
+
+  const p = preguntas[actual];
+
+  const card = document.createElement('div');
+  card.className = 'question-card active';
+  card.innerHTML = `
+    <div class="q-meta">AFIRMACIÓN ${actual + 1} DE ${preguntas.length}</div>
+    <p class="q-text">${p.texto}</p>
+    <div class="choices">
+      <button class="choice-btn" data-val="true">Verdadero</button>
+      <button class="choice-btn" data-val="false">Falso</button>
+    </div>
+    <div class="feedback" id="feedback">${p.dato}</div>
+    <div class="stamp" id="stamp"></div>
+    <div class="nav-row">
+      <button class="next-btn" id="nextBtn">${actual === preguntas.length - 1 ? 'Ver veredicto' : 'Siguiente afirmación →'}</button>
+    </div>
+  `;
+  quizArea.appendChild(card);
+
+  const buttons = card.querySelectorAll('.choice-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => handleAnswer(btn, buttons, p));
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+}
+
+function handleAnswer(btn, buttons, p){
+  if(respondida) return;
+  respondida = true;
+
+  const elegido = btn.dataset.val === 'true';
+  const correcto = elegido === p.respuesta;
+  const dot = document.getElementById('dot-' + actual);
+
+  buttons.forEach(b => {
+    b.disabled = true;
+    const val = b.dataset.val === 'true';
+    if(val === p.respuesta) b.classList.add('correct');
+    else if(b === btn) b.classList.add('wrong');
+  });
+
+  const stamp = document.getElementById('stamp');
+  stamp.textContent = correcto ? 'Confirmado' : 'Erróneo';
+  stamp.classList.add('show', correcto ? 'correct' : 'wrong');
+
+  document.getElementById('feedback').classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+
+  dot.classList.remove('current');
+  dot.classList.add(correcto ? 'correct' : 'wrong');
+
+  if(correcto) puntaje++;
+}
+
+function nextQuestion(){
+  actual++;
+  if(actual < preguntas.length){
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults(){
+  quizArea.style.display = 'none';
+  progressTrack.style.display = 'none';
+  results.classList.add('active');
+
+  document.getElementById('scoreBig').textContent = `${puntaje} / ${preguntas.length}`;
+
+  let msg;
+  if(puntaje === preguntas.length) msg = 'Expediente cerrado sin errores. Investigador impecable.';
+  else if(puntaje >= 7) msg = 'Buen ojo para el detalle. El caso está prácticamente resuelto.';
+  else if(puntaje >= 4) msg = 'Algunas pistas se te escaparon. Vale la pena revisar el expediente de nuevo.';
+  else msg = 'El caso necesita más investigación. Inténtalo otra vez.';
+
+  document.getElementById('scoreMsg').textContent = msg;
+}
+
+function restartQuiz(){
+  actual = 0;
+  puntaje = 0;
+  results.classList.remove('active');
+  quizArea.style.display = 'block';
+  progressTrack.style.display = 'flex';
+  buildProgress();
+  renderQuestion();
+}
+
+buildProgress();
+renderQuestion();
+</script>
+
+</body>
+</html>
