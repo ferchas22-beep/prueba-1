@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen: Do / Does</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 30px 15px;
+    color: #2c3e50;
+  }
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 30px 35px;
+  }
+  h1 {
+    text-align: center;
+    color: #1a5276;
+    margin-bottom: 5px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #7f8c8d;
+    margin-bottom: 25px;
+    font-size: 0.95em;
+  }
+  .nombre {
+    margin-bottom: 25px;
+  }
+  .nombre label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .nombre input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+  }
+  .pregunta {
+    margin-bottom: 22px;
+    padding: 15px;
+    background: #f9fbfd;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+  }
+  .pregunta p.enunciado {
+    font-weight: 600;
+    margin: 0 0 10px 0;
+  }
+  .opciones label {
+    display: block;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .opciones label:hover {
+    background: #eaf2fb;
+  }
+  .opciones input {
+    margin-right: 8px;
+  }
+  .correcta {
+    background: #d5f5e3 !important;
+    font-weight: bold;
+  }
+  .incorrecta {
+    background: #fadbd8 !important;
+  }
+  button#enviar {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: #1a5276;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.05em;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  button#enviar:hover {
+    background: #154360;
+  }
+  #resultado {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    display: none;
+  }
+  .aprobado {
+    background: #d5f5e3;
+    color: #1e8449;
+  }
+  .reprobado {
+    background: #fadbd8;
+    color: #922b21;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Examen: Do / Does</h1>
+  <p class="subtitle">Selecciona la opción correcta para cada pregunta</p>
+
+  <div class="nombre">
+    <label for="alumno">Nombre del estudiante:</label>
+    <input type="text" id="alumno" placeholder="Escribe tu nombre">
+  </div>
+
+  <form id="examenForm">
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">1. _____ you like pizza?</p>
+      <div class="opciones">
+        <label><input type="radio" name="p1" value="a"> a) Does</label>
+        <label><input type="radio" name="p1" value="b"> b) Do</label>
+        <label><input type="radio" name="p1" value="c"> c) Is</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">2. _____ she work on Saturdays?</p>
+      <div class="opciones">
+        <label><input type="radio" name="p2" value="a"> a) Does</label>
+        <label><input type="radio" name="p2" value="b"> b) Do</label>
+        <label><input type="radio" name="p2" value="c"> c) Are</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">3. My parents _____ not live in this city.</p>
+      <div class="opciones">
+        <label><input type="radio" name="p3" value="a"> a) does</label>
+        <label><input type="radio" name="p3" value="b"> b) do</label>
+        <label><input type="radio" name="p3" value="c"> c) is</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">4. He _____ not have a car.</p>
+      <div class="opciones">
+        <label><input type="radio" name="p4" value="a"> a) does</label>
+        <label><input type="radio" name="p4" value="b"> b) do</label>
+        <label><input type="radio" name="p4" value="c"> c) am</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">5. _____ they play soccer every weekend?</p>
+      <div class="opciones">
+        <label><input type="radio" name="p5" value="a"> a) Does</label>
+        <label><input type="radio" name="p5" value="b"> b) Is</label>
+        <label><input type="radio" name="p5" value="c"> c) Do</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">6. What time _____ the movie start?</p>
+      <div class="opciones">
+        <label><input type="radio" name="p6" value="a"> a) does</label>
+        <label><input type="radio" name="p6" value="b"> b) do</label>
+        <label><input type="radio" name="p6" value="c"> c) is</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">7. We _____ not understand the lesson.</p>
+      <div class="opciones">
+        <label><input type="radio" name="p7" value="a"> a) does</label>
+        <label><input type="radio" name="p7" value="b"> b) do</label>
+        <label><input type="radio" name="p7" value="c"> c) are</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="a">
+      <p class="enunciado">8. _____ your brother speak English?</p>
+      <div class="opciones">
+        <label><input type="radio" name="p8" value="a"> a) Does</label>
+        <label><input type="radio" name="p8" value="b"> b) Do</label>
+        <label><input type="radio" name="p8" value="c"> c) Is</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="c">
+      <p class="enunciado">9. _____ I need a ticket to enter?</p>
+      <div class="opciones">
+        <label><input type="radio" name="p9" value="a"> a) Does</label>
+        <label><input type="radio" name="p9" value="b"> b) Is</label>
+        <label><input type="radio" name="p9" value="c"> c) Do</label>
+      </div>
+    </div>
+
+    <div class="pregunta" data-correcta="b">
+      <p class="enunciado">10. It _____ not rain much in this region.</p>
+      <div class="opciones">
+        <label><input type="radio" name="p10" value="a"> a) do</label>
+        <label><input type="radio" name="p10" value="b"> b) does</label>
+        <label><input type="radio" name="p10" value="c"> c) is</label>
+      </div>
+    </div>
+
+    <button type="button" id="enviar" onclick="calificar()">Enviar examen</button>
+  </form>
+
+  <div id="resultado"></div>
+</div>
+
+<script>
+function calificar() {
+  const preguntas = document.querySelectorAll('.pregunta');
+  let correctas = 0;
+
+  preguntas.forEach((pregunta, index) => {
+    const nombre = 'p' + (index + 1);
+    const seleccionado = pregunta.querySelector(`input[name="${nombre}"]:checked`);
+    const respuestaCorrecta = pregunta.dataset.correcta;
+    const labels = pregunta.querySelectorAll('.opciones label');
+
+    labels.forEach(label => {
+      label.classList.remove('correcta', 'incorrecta');
+      const input = label.querySelector('input');
+      if (input.value === respuestaCorrecta) {
+        label.classList.add('correcta');
+      }
+      if (seleccionado && input.value === seleccionado.value && input.value !== respuestaCorrecta) {
+        label.classList.add('incorrecta');
+      }
+    });
+
+    if (seleccionado && seleccionado.value === respuestaCorrecta) {
+      correctas++;
+    }
+  });
+
+  const nota = (correctas / preguntas.length) * 10;
+  const resultadoDiv = document.getElementById('resultado');
+  const nombreAlumno = document.getElementById('alumno').value || 'Estudiante';
+
+  resultadoDiv.style.display = 'block';
+  resultadoDiv.className = nota >= 6 ? 'aprobado' : 'reprobado';
+  resultadoDiv.innerHTML = `${nombreAlumno}: ${correctas} de ${preguntas.length} correctas — Nota: ${nota.toFixed(1)} / 10`;
+
+  resultadoDiv.scrollIntoView({behavior: 'smooth'});
+}
+</script>
+
+</body>
+</html>
